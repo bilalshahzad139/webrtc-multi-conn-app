@@ -1,0 +1,25 @@
+.userbox {
+    margin-left: 20px;
+    padding: 8px;
+    width: 450px;
+    /* height:366px; */
+    border: 1px solid transparent;
+    color: var(--fc-medium);
+    border-color: var(--powder-400);
+    background-color: burlywood;
+    float: left;
+}
+
+.userbox video {
+    display: inline-block;
+    border: 1px solid red;
+    margin: 0;
+    padding: 0;
+    width: 450px;
+    height: 300px;
+}
+
+.footer{
+    font-size: large;
+
+}

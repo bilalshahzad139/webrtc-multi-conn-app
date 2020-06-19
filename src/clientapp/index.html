@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta name="viewport" content="width=device-width" />
+    <title>Multi Conn App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="scripts/jquery-3.4.1.min.js"></script>
+    <script src="scripts/jquery.signalR-2.2.2.min.js"></script>
+
+    <script src="https://localhost:44338/signalr/hubs"></script>
+    <script src="scripts/wrtchelper.js"></script>
+    <script src="scripts/app.js"></script>
+
+    <script>
+        
+        $(function () {
+            debugger;
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            var meeting_id = urlParams.get('mid');
+
+            if (!meeting_id) {
+                var murl = window.location.origin + "?mid=" +  (new Date()).getTime();
+                $('#meetingid').attr('href',murl).text(murl);
+                $("#meetingContainer").hide();
+                $("#meetingbox").show();
+                return;
+            }
+
+            var user_id = urlParams.get('uid');
+            if (!user_id) {
+                user_id = window.prompt('Enter your nick!');
+            }
+
+            if (!user_id || !meeting_id) {
+                alert('user id or meeting id missing');
+                return;
+            }
+            $("#meetingContainer").show();
+            $("#meetingbox").hide();
+
+            MyApp._init(user_id,meeting_id);
+
+        });
+    </script>
+</head>
+<body>
+
+    <div id="meetingbox" style="display: none;">
+        <p>It seems you are not trying to join any meeting!</p>
+        Meeting title for sharing: <a id='meetingid' href="#"></a>
+    </div>
+
+    <div id="meetingContainer" style="display: none;">
+        <h1 id='meetingname'></h1>
+        <div>
+            <div style="width:200px;height:300px;float:left;overflow-y: scroll;display:none" id="messages">
+                <div><input type="text" id="msgbox" /><button id="btnsend">Send</button></div>
+            </div>
+            <div id='divUsers' style="display:none">
+                <div id="me" class="userbox">
+                    <h2></h2>
+                    <div>
+                        <video autoplay muted id="localVideoCtr" />
+                    </div>
+                </div>
+                <div id="otherTemplate" class="userbox" style="display:none">
+                    <h2></h2>
+                    <div>
+                        <video autoplay muted id="remoteVideoCtr111"></video>
+                        <audio autoplay controls style="display:none" id="remoteAudioCtr111"></audio>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div style="clear: both;"></div>
+        <div class="toolbox" style="display:none">
+            <button id="btnMuteUnmute">UnMute</button>
+            <button id="btnStartStopCam">Start Camera</button>
+            <button id="btnStartStopScreenshare">Screen Share</button>
+            <button id="btnResetMeeting">Reset Meeting</button>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="footer">
+        Src is available at: <a target="_blank" href="https://github.com/bilalshahzad139/webrtc-multi-conn-app">https://github.com/bilalshahzad139/webrtc-multi-conn-app</a> <br>
+        YouTube: <a target="_blank" href="https://www.youtube.com/c/LearnInUrdu139">https://www.youtube.com/c/LearnInUrdu139</a> <br>
+        FB: <a target="_blank" href="https://www.facebook.com/LearningInUrduCentre/">https://www.facebook.com/LearningInUrduCentre/</a> <br>
+    </div>
+
+</body>
+</html>

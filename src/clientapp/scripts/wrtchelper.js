@@ -82,13 +82,7 @@ var WrtcHelper = (function () {
             $("#btnStartStopScreenshare").text('Screen Share');
             _videoState = _newVideoState;
 
-            if (_videoCamSSTrack) {
-                _videoCamSSTrack.stop();
-                _videoCamSSTrack = null;
-                _localVideoPlayer.srcObject = null;
-    
-                RemoveAudioVideoSenders(_rtpVideoSenders);
-            }
+            ClearCurrentVideoCamStream(_rtpVideoSenders);
             return;
         }
 
@@ -112,15 +106,14 @@ var WrtcHelper = (function () {
                     },
                     audio: false
                 });
+
+                vstream.oninactive = e => {
+                    ClearCurrentVideoCamStream(_rtpVideoSenders);
+                    $("#btnStartStopScreenshare").text('Screen Share');
+                };
             }
 
-            if (_videoCamSSTrack) {
-                _videoCamSSTrack.stop();
-                _videoCamSSTrack = null;
-                _localVideoPlayer.srcObject = null;
-    
-                RemoveAudioVideoSenders(_rtpVideoSenders);
-            }
+            ClearCurrentVideoCamStream(_rtpVideoSenders);
 
             _videoState = _newVideoState;
 
@@ -145,6 +138,16 @@ var WrtcHelper = (function () {
         } catch (e) {
             console.log(e);
             return;
+        }
+    }
+
+    function ClearCurrentVideoCamStream(rtpVideoSenders){
+        if (_videoCamSSTrack) {
+            _videoCamSSTrack.stop();
+            _videoCamSSTrack = null;
+            _localVideoPlayer.srcObject = null;
+
+            RemoveAudioVideoSenders(rtpVideoSenders);
         }
     }
 

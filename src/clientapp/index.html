@@ -8,7 +8,7 @@
     <script src="scripts/jquery-3.4.1.min.js"></script>
     <script src="scripts/jquery.signalR-2.2.2.min.js"></script>
 
-    <script src="https://localhost:44338/signalr/hubs"></script>
+    <script src="https://localhost:44338/signalr/hubs/signalr/hubs"></script>
     <script src="scripts/wrtchelper.js"></script>
     <script src="scripts/app.js"></script>
 
@@ -48,8 +48,9 @@
 <body>
 
     <div id="meetingbox" style="display: none;">
-        <p>It seems you are not trying to join any meeting!</p>
-        Meeting title for sharing: <a id='meetingid' href="#"></a>
+        <p>It seems you are not trying to join any meeting!
+            You may start a new meeting. Here is generated for you.  <a id='meetingid' href="#"></a>
+        </p>
     </div>
 
     <div id="meetingContainer" style="display: none;">

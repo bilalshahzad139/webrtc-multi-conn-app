@@ -1,4 +1,14 @@
 var WrtcHelper = (function () {
+	// const iceConfiguration = {
+    // iceServers: [
+    //     {url:'stun:stun.l.google.com:19302'},
+	// 	{url:'stun:stun1.l.google.com:19302'},
+	// 	{url:'stun:stun2.l.google.com:19302'},
+	// 	{url:'stun:stun3.l.google.com:19302'},
+	// 	{url:'stun:stun4.l.google.com:19302'},
+	//   ]
+	// };
+
     var _audioTrack;
 
     var peers_conns = [];
@@ -240,17 +250,28 @@ var WrtcHelper = (function () {
             if (event.track.kind == 'video') {
                 _remoteVideoStreams[connid].getVideoTracks().forEach(t => _remoteVideoStreams[connid].removeTrack(t));
                 _remoteVideoStreams[connid].addTrack(event.track);
-                _remoteVideoStreams[connid].getTracks().forEach(t => console.log(t));
+                //_remoteVideoStreams[connid].getTracks().forEach(t => console.log(t));
 
                 var _remoteVideoPlayer = document.getElementById('v_' + connid)
                 _remoteVideoPlayer.srcObject = null;
                 _remoteVideoPlayer.srcObject = _remoteVideoStreams[connid];
                 _remoteVideoPlayer.load();
-                $(_remoteVideoPlayer).show();
+                //$(_remoteVideoPlayer).show();
 
-                event.track.onmute = () => {
-                    _remoteVideoPlayer.srcObject = null;
-                };
+                // event.track.onmute = function() {
+                //     console.log(connid + ' muted');
+                //    console.log(this.muted+ ' muted');
+                //    console.log(event.track.muted+ ' muted');
+                //    console.log(this.readyState+ ' muted');
+                //    console.log('muted',this);
+                //    console.log('muted',_remoteVideoStreams[connid] );
+                //    console.log('muted',_remoteVideoPlayer.paused);
+                //    console.log('muted',_remoteVideoPlayer.readyState );
+                //    console.log('muted',_remoteVideoPlayer.ended );
+                //    if(this.muted){
+                //     //_remoteVideoPlayer.srcObject = null;
+                //    }
+                // };
             }
             else if (event.track.kind == 'audio') {
                 var _remoteAudioPlayer = document.getElementById('a_' + connid)

@@ -8,14 +8,14 @@
     <script src="scripts/jquery-3.4.1.min.js"></script>
     <script src="scripts/jquery.signalR-2.2.2.min.js"></script>
 
-    <script src="https://localhost:44338/signalr/hubs/signalr/hubs"></script>
+    <script src="https://localhost:44338/signalr/hubs"></script>
     <script src="scripts/wrtchelper.js"></script>
     <script src="scripts/app.js"></script>
 
     <script>
         
         $(function () {
-            debugger;
+            
             const urlParams = new URLSearchParams(window.location.search);
             
             var meeting_id = urlParams.get('mid');

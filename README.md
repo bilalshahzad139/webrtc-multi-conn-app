@@ -1,6 +1,6 @@
 
 # What does this do?
-It creates a meeting URL for you and allows multiple people to join that meeting. It does peer to peer communication for audio/video. It uses a SignalR based signaling server for client to server and server to client communication. SDP & ICE details (between peers) will be shared through this Signaling Server. Participants can do Audio/Video/Screen sharing and it is being done using Browser builtin WebRTC APIs. 
+It creates a meeting URL for you and allows multiple people to join that meeting. It does peer to peer communication for audio/video. It uses a **NodeJS (socket.io)** based signaling server for client to server and server to client communication. SDP & ICE details (between peers) will be shared through this Signaling Server. Participants can do Audio/Video/Screen sharing and it is being done using Browser builtin WebRTC APIs. 
 **Note:** Peer to Peer approach is good for few users (e.g. up to three) but if more users join the meeting, you will start facing performance degradation as each participant will be communicating with every other participant. In those cases, you would like to involve a media relay server which will receives media traffic and relay to other participants.
 
 [You may see its live demo here](https://webrtcclient.azurewebsites.net/)
@@ -9,17 +9,24 @@ It creates a meeting URL for you and allows multiple people to join that meeting
 # Structure of Repo
 
 ## src -> clientapp: 
-This folder contains HTML/CSS/JS based client application. It is using WebRTC APIs to allow a user to play with Audio/Video/Screen sharing stream. For Peer To Peer Connections, It uses a Signaling Server (explained below). This folder needs to be hosted in a web server. Opening the html file directly will not work. We can open this folder in Visual Studio Code and run it using Live Server extension. We also have **.vscode/settings.json** file in it. We need to update ssl-certificate files paths in it.
-**app.js** contains non-webrtc related javascript. Currently it is using SingalR client API to communicate with signaling server. If you are going to use Non-SignalR based implementation (e.g. NodeJS websocket), you need to make changes in this JS file.
-**wrtchelper.js** contains web rtc related javascript. 
+This folder contains **HTML/CSS/JS** based client application. It is using WebRTC APIs to allow a user to play with Audio/Video/Screen sharing stream. For Peer To Peer Connections, It uses a Signaling Server (explained below). This folder needsto be hosted in a web server. Opening the html file directly will not work. We can open this folder in Visual Studio Code and run it using Live Server extension. We also have **.vscode/settings.json** file in it. We need to update ssl-certificate files paths in it.
+**app.js** contains non-webrtc related javascript. Currently it is using Socket.IO client API to communicate with signaling server. 
+**wrtchelper.js** contains web rtc related javascript. It is independent of Signaling Server technology.
 ## src -> server:
-This folder contains an ASP.NET SignalR 2.2 (.NET Framework 4.8) project. This is being used a signaling server and for meeting & participant management. It is maintaining this information in memory (currently) and no database is involved. Hub file (which contains server side functions) is available in Models/WebRtcHub.cs file. You need to build project to download required packages. 
+This folder contains a NodeJS project. This is being used as signaling server and for meeting & participant management. It is maintaining this information in memory (currently) and no database is involved. **app.js** file (which contains server side functions) is available in this folder. You need to 
+1. Install NodeJS
+2. Go to this folder and run
+3. npm install
+4. npm run
+
+It will start server app on port (3000) and URL to use in client app is http://localhost:3000
+
 ## src -> ssl-certificate
 This folder contains localhost certificate to be used with Visual Studio Code Live Server.
 
 # Application Flow
 1. When we open index.html of client application, it expects a meeting id (?mid=) in URL. If it is not given, it generates one and shows on page.
-2. If meeting id is available in URL, it asks for a user name (in prompt). It sends a request to our signalR server for meeting/participant registration.
+2. If meeting id is available in URL, it asks for a user name (in prompt). It sends a request to our signaling server for meeting/participant registration.
 3. Server checks & store meeting/user/connection detail in its server memory.
 4. When a user registers with a server, it gets details of already registered/connected users against that meeting it. Server also notifies other participants about this new participant. 
 5. Client side creates a RTCPeerConnection for every new participant and maintains these connections in an array. Same happens for Streams. 
@@ -29,10 +36,10 @@ This folder contains localhost certificate to be used with Visual Studio Code Li
 
 # RTCPeerConnection Management
 
-1. First user (User1) joins the meeting. Box for local user is displayed. No peer exists (or no peers data come from server) so no rtc connection is created. Signaling servers now know about one participant.
+1. First user (User1) joins the meeting. Box for local user is displayed. No peer exists (or no peers data come from server) so no rtc connection is created. Signaling server now know about one participant.
 2. Second user (User2) joins the meeting.  Box for local user is displayed. Request goes to server. Server saves its details and returns detail of existing users (i.e. user 1). User2 will receive detail of User1 and will create a box for it. **User2 will create an RTCPeerConnection for User1 and will store it in connection array.** Server will also notify User1 about User2. User1 will create a box for User2.  **User1 will create an RTCPeerConnection for User2 and will store it in connections array.**
 3. Third user (User3) joins the meeting. Box for local user is displayed. Request goes to server. Server saves its details and returns detail of existing users (i.e. User1, User2). User3 will receive detail of User1 & User2. It will create a boxes for them. **User3 will create RTCPeerConnection for User1 & for User2 and  and will store them in its connections array.** Server will also notify User1 & User2 about User3. User1 will create a box for User3.  **User1 will create an RTCPeerConnection for User3 and will store it in its connections array.** and **User2 will create an RTCPeerConnection for User3 and will store it in its connections array.**
-4. When a user (browser) gets disconnected from signalr server, server removes it from local memory (after specific time when onDisconnected event fires). It also notifies other participants so they remove RTC connection object from its connections list.
+4. When a user (browser) gets disconnected from signalr server, server removes it from local memory (after specific time when disconnected event fires). It also notifies other participants so they remove RTC connection object from its connections list.
 
 # SDP Sharing Between Peers
 
@@ -44,13 +51,13 @@ A peer (browser tab) starts communication by creating connection and then creati
 # How to Setup & Run
 
 1. Clone repository. 
-2. Open src/Server/SignalingServer/SignalingServer.csproj in Visual Studio 2019. If you have older VS version, you can create ASP.NET SignalR project there and copy Models/webrtchub.cs code in your hub file.
-3. Build project. And run the project. 
-4. Open src/clientapp folder in Visual Studio.
+2. Open command prompt and go to src/Server folder. 
+3. Run 'npm install' & then 'npm run'.
+4. Open src/clientapp folder in Visual Studio Code
 5. Fix certificate path in src/clieintapp/.vscode/settings.json
 6. Run with Live Server (it is a VS extension, you will have to install)
 7. You will see a meeting link generated for you. You can open it in multiple tabs to connect through different users. 
-8. When you open a link (with meeting id) in new tab, it creates a connection with signaling server and registers your user with connection id (generated by signalR). So this connection id is unique identifier for application, not your user name.
+8. When you open a link (with meeting id) in new tab, it creates a connection with signaling server and registers your user with connection id (generated by socket io). So this connection id is unique identifier for application, not your user name.
 9. Note each refresh will create a new connection with server (means new registration). Old connections will be removed after few seconds and UI will reflect that too.
 10. As it is using WebRTC APIs so when you will start audio/camera/screen sharing, it will ask for your permission.
 

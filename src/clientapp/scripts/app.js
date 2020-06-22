@@ -1,7 +1,7 @@
 var MyApp = (function(){
 
-var _hub = null;
-var _hubUrl = 'https://localhost:44338/signalr/hubs';
+var socket = null;
+var socker_url = 'http://localhost:3000';
 var meeting_id = '';
 var user_id = '';
 
@@ -19,69 +19,76 @@ function init(uid,mid){
 
 function SignalServerEventBinding(){
     // Set up the SignalR connection
-    $.connection.hub.logging = true;
+    //$.connection.hub.logging = true;
 
-    _hub = $.connection.webRtcHub;
-    $.connection.hub.url = _hubUrl;
+    //_hub = $.connection.webRtcHub;
+    //$.connection.hub.url = _hubUrl;
+
+    socket = io.connect(socker_url);
 
     var serverFn = function (data, to_connid) {
-        _hub.server.exchangeSDP(data, to_connid);
+        socket.emit('exchangeSDP',{message:data,to_connid:to_connid});
+        //_hub.server.exchangeSDP(data, to_connid);
     };
 
-    _hub.client.reset = function () {
+    socket.on('reset',function () {
         location.reload();
-    }
+    });
 
-    _hub.client.exchangeSDP = async function (data, from_connid) {
+    socket.on('exchangeSDP', async function (data) {
         //alert(from_connid);
-        await WrtcHelper.ExecuteClientFn(data, from_connid);
-    };
+        await WrtcHelper.ExecuteClientFn(data.message, data.from_connid);
+    });
 
-    _hub.client.informAboutNewConnection = function (other_user_id, connId) {
-        AddNewUser(other_user_id, connId);
-        WrtcHelper.createNewConnection(connId);
-    };
+    socket.on('informAboutNewConnection',function (data) {
+        AddNewUser(data.other_user_id, data.connId);
+        WrtcHelper.createNewConnection(data.connId);
+    });
 
-    _hub.client.informAboutConnectionEnd = function (connId) {
+    socket.on('informAboutConnectionEnd',function (connId) {
         $('#' + connId).remove();
         WrtcHelper.closeExistingConnection(connId);
-    };
+    });
 
-    _hub.client.showChatMessage = function (from, message, time) {
-        var div = $("<div>").text(from + '(' + time + '):' + message);
+    socket.on('showChatMessage', function (data) {
+        var div = $("<div>").text(data.from + '(' + data.time + '):' + data.message);
         $('#messages').append(div);
-    }
+    });
 
-    $.connection.hub.start(function () {
-        console.log('connected to signal server.');
-    }).done(function () {
+    socket.on('connect', () => {
+        if(socket.connected){
+            WrtcHelper.init(serverFn, socket.id);
 
-        WrtcHelper.init(serverFn, $.connection.hub.id);
-
-        if (user_id != "" && meeting_id != "") {
-            _hub.server.connect(user_id, meeting_id).done(function (other_users) {
-                $('#divUsers .other').remove();
-                if (other_users) {
-                    for (var i = 0; i < other_users.length; i++) {
-                        AddNewUser(other_users[i].user_id, other_users[i].connectionId);
-                        WrtcHelper.createNewConnection(other_users[i].connectionId);
-                    }
-                }
-                $(".toolbox").show();
-                $('#messages').show();
-                $('#divUsers').show();
-            });
+            if (user_id != "" && meeting_id != "") {
+                socket.emit('userconnect',{dsiplayName:user_id, meetingid:meeting_id});
+                //_hub.server.connect(user_id, meeting_id)
+                
+            }
         }
+    });
+
+    socket.on('userconnected',function(other_users){
+        $('#divUsers .other').remove();
+        if (other_users) {
+            for (var i = 0; i < other_users.length; i++) {
+                AddNewUser(other_users[i].user_id, other_users[i].connectionId);
+                WrtcHelper.createNewConnection(other_users[i].connectionId);
+            }
+        }
+        $(".toolbox").show();
+        $('#messages').show();
+        $('#divUsers').show();
     });
 }
 
 function EventBinding(){
     $('#btnResetMeeting').on('click', function () {
-        _hub.server.reset();
+        socket.emit('reset');
     });
 
     $('#btnsend').on('click', function () {
-        _hub.server.sendMessage($('#msgbox').val());
+        //_hub.server.sendMessage($('#msgbox').val());
+        socket.emit('sendMessage',$('#msgbox').val());
         $('#msgbox').val('');
     });
 

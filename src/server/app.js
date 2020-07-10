@@ -4,7 +4,7 @@ const app = express()
 var _userConnections =[];
 //routes
 app.get('/', (req, res) => {
-	res.render('index')
+	res.send('<h1>Node Signal Server</h1>');
 })
 var port = process.env.PORT || 3000;
 //Listen on port 3000

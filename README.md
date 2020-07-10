@@ -70,11 +70,14 @@ A peer (browser tab) starts communication by creating connection and then creati
 5. Right click in empty location in Visual Studio "Explorer" and choose "Deploy to Web App".
 6. Open following link. Here **webrtcssnode** is name of App Service. https://webrtcssnode.scm.azurewebsites.net/webssh/host
 7. Goto site/wwwroot and run following command
-npm rebuild
-8. Open src/clientapp in visual studio code.
-9. Update **socket_url** variable in src/clientapp/scripts/app.js file
-var socker_url = 'https://webrtcssnode.azurewebsites.net';
-9. Run app with Visual Studio Live Server & test the functionality
+`npm rebuild`
+8. Open https://webrtcssnode.azurewebsites.net/ and following should appear
+**Node Signal Server**
+9. Open src/clientapp in visual studio code.
+10. Update **socket_url** variable in src/clientapp/scripts/app.js file
+`var socker_url = 'https://webrtcssnode.azurewebsites.net';`
+11. Run app with Visual Studio Live Server & test the functionality
+
 
 Copyright (c) 2020 LearningInUrdu https://github.com/bilalshahzad139/
 Bilal Shahzad | https://www.linkedin.com/in/bilalshahzad139/

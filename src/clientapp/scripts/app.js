@@ -1,7 +1,7 @@
 var MyApp = (function(){
 
 var socket = null;
-var socker_url = 'http://localhost:3000';
+var socker_url = 'https://webrtcssnode.azurewebsites.net';
 var meeting_id = '';
 var user_id = '';
 

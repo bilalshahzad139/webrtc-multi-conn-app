@@ -61,6 +61,21 @@ A peer (browser tab) starts communication by creating connection and then creati
 9. Note each refresh will create a new connection with server (means new registration). Old connections will be removed after few seconds and UI will reflect that too.
 10. As it is using WebRTC APIs so when you will start audio/camera/screen sharing, it will ask for your permission.
 
+# Deployment on Azure as App Service (using Visual Studio Code)
+
+1. Create a new Azure App Service e.g. "webrtcssnode" (https://webrtcssnode.azurewebsites.net)
+2. Install [Azure App Service extension in Visual Studio Code] (https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice)
+3. In Visual Studio Code Activity bar, A new option to setup "Azure App Service" is available now. Using this option we can login to azure & choose specific app service.
+4. Now open src/server folder in Visual Studio Code.
+5. Right click in empty location in Visual Studio "Explorer" and choose "Deploy to Web App".
+6. Open following link. Here **webrtcssnode** is name of App Service. https://webrtcssnode.scm.azurewebsites.net/webssh/host
+7. Goto site/wwwroot and run following command
+npm rebuild
+8. Open src/clientapp in visual studio code.
+9. Update **socket_url** variable in src/clientapp/scripts/app.js file
+var socker_url = 'https://webrtcssnode.azurewebsites.net';
+9. Run app with Visual Studio Live Server & test the functionality
+
 Copyright (c) 2020 LearningInUrdu https://github.com/bilalshahzad139/
 Bilal Shahzad | https://www.linkedin.com/in/bilalshahzad139/
 

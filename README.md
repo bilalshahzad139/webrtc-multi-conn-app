@@ -78,6 +78,20 @@ A peer (browser tab) starts communication by creating connection and then creati
 `var socker_url = 'https://webrtcssnode.azurewebsites.net';`
 11. Run app with Visual Studio Live Server & test the functionality
 
+# Deployment on Azure as App Service (using FTP option)
+1. Create a new Azure App Service e.g. "webrtcssnode" (https://webrtcssnode.azurewebsites.net)
+2. You will get FTP details there. Connect to it using any FTP tool (e.g. FileZilla)
+3. Copy files from src/server folder to Ftp/site/wwwroot folder
+4. Open following link. Here **webrtcssnode** is name of App Service. https://webrtcssnode.scm.azurewebsites.net/webssh/host
+5. Goto site/wwwroot and run following command
+`npm rebuild`
+6. Open https://webrtcssnode.azurewebsites.net/ and following should appear
+**Node Signal Server**
+7. Open src/clientapp in visual studio code.
+8. Update **socket_url** variable in src/clientapp/scripts/app.js file
+`var socker_url = 'https://webrtcssnode.azurewebsites.net';`
+9. Run app with Visual Studio Live Server & test the functionality
+
 
 Copyright (c) 2020 LearningInUrdu https://github.com/bilalshahzad139/
 Bilal Shahzad | https://www.linkedin.com/in/bilalshahzad139/

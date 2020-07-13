@@ -6,3 +6,8 @@ WebRTC based Multiple connections based App where more than two users can join t
 
 # Source Code (NodeJS as signaling Server)
 [app-ss-node branch](https://github.com/bilalshahzad139/webrtc-multi-conn-app/tree/app-ss-node)
+
+# Source Code with config changes for Deployment on Azure as Web App Service - (NodeJS as signaling Server) 
+[app-ss-node branch-azure](https://github.com/bilalshahzad139/webrtc-multi-conn-app/tree/app-ss-node-azure)
+
+

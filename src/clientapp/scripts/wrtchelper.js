@@ -1,11 +1,12 @@
 var WrtcHelper = (function () {
-	 const iceConfiguration = {
+	 var iceConfiguration = {
      iceServers: [
          {urls:'stun:stun.l.google.com:19302'},
 	 	{urls:'stun:stun1.l.google.com:19302'},
 	 	{urls:'stun:stun2.l.google.com:19302'},
 	 	{urls:'stun:stun3.l.google.com:19302'},
 	 	{urls:'stun:stun4.l.google.com:19302'},
+         
 	   ]
 	 };
 
@@ -31,6 +32,10 @@ var WrtcHelper = (function () {
     var _my_connid = '';
 
     async function _init(serFn, myconnid) {
+
+        if(window.s_turn)
+            iceConfiguration.iceServers.push(window.s_turn);
+
         _my_connid = myconnid;
         _serverFn = serFn;
         _localVideoPlayer = document.getElementById('localVideoCtr');

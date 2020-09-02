@@ -1,11 +1,13 @@
 var MyApp = (function(){
 
 var _hub = null;
-var _hubUrl = 'https://localhost:44338/signalr/hubs';
+//var _hubUrl = 'https://localhost:44338/signalr/hubs';
+var _hubUrl = 'https://webrtcss.azurewebsites.net/signalr/hubs';
 var meeting_id = '';
 var user_id = '';
 
 function init(uid,mid){
+
     user_id = uid;
     meeting_id = mid;
 

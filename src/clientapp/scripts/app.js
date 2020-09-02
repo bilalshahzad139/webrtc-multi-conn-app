@@ -88,6 +88,25 @@ function EventBinding(){
     $('#divUsers').on('dblclick', 'video', function () {
         this.requestFullscreen();
     });
+
+    $('#fileCtl').on('change',function(){
+        var files = this.files;
+
+            if (files.length > 0) {
+                var fileObj = files[0];
+                alert(fileObj.name);
+                WrtcHelper.sendFileToAll(fileObj);
+            }
+
+            $(this).val('');
+    });
+
+    $('#sendFile').on('click',function(e){
+        e.preventDefault();
+
+        $('#fileCtl').click();
+        return false;
+    });
 }
 
 function AddNewUser(other_user_id, connId) {

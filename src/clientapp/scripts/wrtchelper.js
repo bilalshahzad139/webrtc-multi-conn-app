@@ -283,6 +283,9 @@ var WrtcHelper = (function () {
             }
         };
 
+
+        connection.ondatachannel = onRecievingDataChannel;
+
         peers_con_ids[connid] = connid;
         peers_conns[connid] = connection;
 
@@ -375,6 +378,90 @@ var WrtcHelper = (function () {
             _remoteVideoStreams[connid] = null;
         }
     }
+    async function sendFile(con_id,fileObj){
+        var connection = peers_conns[con_id];
+        if (!connection) {
+            console.log('connection is not available')
+            return;
+        }
+        
+        //Create a meaningful lable to send file meta
+        var channelLabel = fileObj.name + "$$$" + fileObj.type + "$$$" + fileObj.size;
+        alert(channelLabel);
+        var dataChannel = connection.createDataChannel(channelLabel);
+        dataChannel.binaryType = 'arraybuffer';
+        dataChannel.onopen = async function(){
+            SendFileThroughChannel(dataChannel,fileObj);
+        }
+
+        dataChannel.onmessage = (event) => {
+            debugger;
+            console.log(event.data);
+        }
+    }
+
+    async function SendFileThroughChannel(dataChannel,fileObj){
+        var chunkSizeBytes = 65535;
+        dataChannel.send('START');
+        const arrayBuffer = await fileObj.arrayBuffer();
+        for (let i = 0; i < arrayBuffer.byteLength; i += chunkSizeBytes) {
+            dataChannel.send(arrayBuffer.slice(i, i + chunkSizeBytes));
+        }
+        dataChannel.send('EOF');
+    }
+
+    function onRecievingDataChannel(event){
+            
+        var recChannel = event.channel;
+
+        var receivedBuffers = [];
+        recChannel.onmessage = function(event){
+            if(event.data == "START"){
+                receivedBuffers = [];
+            }
+            else if(event.data !== 'EOF'){
+                receivedBuffers.push(event.data);
+            }
+            else { //EOF came
+                var cLabel = recChannel.label;
+                var metas = cLabel.split('$$$');
+                //check metas array for valiation & type
+                var fileName = metas[0];
+                var fileType = metas[1];
+
+                const arrayBuffer = receivedBuffers.reduce((acc, arrayBuffer) => {
+                    const tmp = new Uint8Array(acc.byteLength + arrayBuffer.byteLength);
+                    tmp.set(new Uint8Array(acc), 0);
+                    tmp.set(new Uint8Array(arrayBuffer), acc.byteLength);
+                    return tmp;
+                  }, new Uint8Array());
+                  debugger;
+                  const blob = new Blob([arrayBuffer],{type:fileType});
+                  downloadFile(blob, fileName);
+                  recChannel.close();
+            }//end of else
+            console.log(event.data);
+        }
+
+        recChannel.onopen = function(event){
+            //alert('opened');
+        }
+
+        recChannel.onclose = function(event){
+            //alert('opened');
+        }
+    }
+
+    const downloadFile = (blob, fileName) => {
+        const a = document.createElement('a');
+        const url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove()
+      };
+
     return {
         init: async function (serverFn, my_connid) {
             await _init(serverFn, my_connid);
@@ -387,6 +474,11 @@ var WrtcHelper = (function () {
         },
         closeExistingConnection: function (connid) {
             closeConnection(connid);
+        },
+        sendFileToAll: async function(fileObj){
+            for (var con_id in peers_con_ids) {
+                await sendFile(con_id,fileObj);
+            }
         }
     }
 }());

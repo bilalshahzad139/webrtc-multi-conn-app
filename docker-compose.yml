@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  client_web:
+    image: nginx:latest
+    container_name: mywebserver
+    ports:
+      - "8082:80"
+      - "4443:4443"
+    volumes:
+      - "./src/clientapp:/usr/share/nginx/html"
+      - "./src/ssl-certificate:/etc/ssl/certs"
+      - "./src/conf.d/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./src/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro"
+    networks:
+      - mytestnet
+    depends_on:
+      - sig_server      
+  sig_server:    
+    image: node:12
+    container_name: mynodeserver
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./src/server:/src"
+    command: bash -c "cd /src && npm install && node app.js"
+    networks:
+      - mytestnet    
+networks:
+  mytestnet:

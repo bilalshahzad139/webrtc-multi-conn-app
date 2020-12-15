@@ -6,6 +6,14 @@ It creates a meeting URL for you and allows multiple people to join that meeting
 [You may see its live demo here](https://webrtcclient.azurewebsites.net/)
 [Video Tutorials on WebRTC](https://www.youtube.com/watch?v=ye7PtovMzb4&list=PL0kdOcU3HXGKW8yEEaY_5lz02vFj6gYFW)
 
+## To Run through docker-compose
+- Open current folder in shell & execute following command 
+ > docker-compose up -d 
+- Access application in browser https://localhost:4443
+- To stop services
+ > docker-compose down
+
+
 # Structure of Repo
 
 ## src -> clientapp: 

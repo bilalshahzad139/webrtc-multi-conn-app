@@ -9,8 +9,8 @@
  
 **Note:** Peer to Peer approach is good for few users (e.g. up to three) but if more users join the meeting, users will start facing performance degradation as each participant will be communicating with every other participant. In those cases, w would like to involve a media relay server which will receive media traffic and relay to other participants.
 
-[You may see its live demo here](https://webrtcclient.azurewebsites.net/)
-[Video Tutorials on WebRTC](https://www.youtube.com/watch?v=ye7PtovMzb4&list=PL0kdOcU3HXGKW8yEEaY_5lz02vFj6gYFW)
+- [You may see its live demo here](https://webrtcclient.azurewebsites.net/)
+- [Video Tutorials on WebRTC](https://www.youtube.com/watch?v=ye7PtovMzb4&list=PL0kdOcU3HXGKW8yEEaY_5lz02vFj6gYFW)
 
 # Structure of Repo
 
@@ -73,18 +73,18 @@ A peer (browser tab) starts communication by creating connection and then creati
 
 ## To Run through docker-compose
 - Open current folder in shell & execute following command 
- > docker-compose up -d 
+  > docker-compose up -d 
 - Access application in browser https://localhost:4443
 - To stop services
- > docker-compose down
+  > docker-compose down
  
 ## To run without docker
 
 ### Run Signaling Server
 - Open command prompt and go to src/Server folder and run following commands 
- > npm install
+  > npm install
  
- > node app.js
+  > node app.js
  
 ### Run Client App
 - Open src/clientapp folder in Visual Studio Code

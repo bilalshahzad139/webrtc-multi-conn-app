@@ -1,29 +1,46 @@
 
 # What does this do?
-It creates a meeting URL for you and allows multiple people to join that meeting. It does peer to peer communication for audio/video. It uses a **NodeJS (socket.io)** based signaling server for client to server and server to client communication. SDP & ICE details (between peers) will be shared through this Signaling Server. Participants can do Audio/Video/Screen sharing and it is being done using Browser builtin WebRTC APIs. 
-**Note:** Peer to Peer approach is good for few users (e.g. up to three) but if more users join the meeting, you will start facing performance degradation as each participant will be communicating with every other participant. In those cases, you would like to involve a media relay server which will receives media traffic and relay to other participants.
+
+- It creates a meeting URL for you and allows multiple people to join that meeting. 
+- It does peer to peer communication for audio/video. 
+- It uses a **NodeJS (socket.io)** based signaling server for client to server and server to client communication. 
+- SDP & ICE details (between peers) will be shared through this Signaling Server. 
+- Participants can do Audio/Video/Screen sharing and it is being done using Browser builtin WebRTC APIs.
+ 
+**Note:** Peer to Peer approach is good for few users (e.g. up to three) but if more users join the meeting, users will start facing performance degradation as each participant will be communicating with every other participant. In those cases, w would like to involve a media relay server which will receive media traffic and relay to other participants.
 
 [You may see its live demo here](https://webrtcclient.azurewebsites.net/)
 [Video Tutorials on WebRTC](https://www.youtube.com/watch?v=ye7PtovMzb4&list=PL0kdOcU3HXGKW8yEEaY_5lz02vFj6gYFW)
 
-
 # Structure of Repo
 
 ## src -> clientapp: 
-This folder contains **HTML/CSS/JS** based client application. It is using WebRTC APIs to allow a user to play with Audio/Video/Screen sharing stream. For Peer To Peer Connections, It uses a Signaling Server (explained below). This folder needsto be hosted in a web server. Opening the html file directly will not work. We can open this folder in Visual Studio Code and run it using Live Server extension. We also have **.vscode/settings.json** file in it. We need to update ssl-certificate files paths in it.
-**app.js** contains non-webrtc related javascript. Currently it is using Socket.IO client API to communicate with signaling server. 
-**wrtchelper.js** contains web rtc related javascript. It is independent of Signaling Server technology.
-## src -> server:
-This folder contains a NodeJS project. This is being used as signaling server and for meeting & participant management. It is maintaining this information in memory (currently) and no database is involved. **app.js** file (which contains server side functions) is available in this folder. You need to 
-1. Install NodeJS
-2. Go to this folder and run
-3. npm install
-4. npm run
+- This folder contains **HTML/CSS/JS** based client application. 
+- It is using WebRTC APIs to allow a user to play with Audio/Video/Screen sharing stream. 
+- For Peer To Peer Connections, It uses a Signaling Server (explained below). 
+- This folder needsto be hosted in a web server. Opening the html file directly will not work. 
+- We can open this folder in Visual Studio Code and run it using Live Server extension. 
+- We also have **.vscode/settings.json** file in it. We need to update ssl-certificate files paths in it.
 
-It will start server app on port (3000) and URL to use in client app is http://localhost:3000
+- **app.js** contains non-webrtc related javascript. Currently it is using Socket.IO client API to communicate with signaling server. 
+- **wrtchelper.js** contains web rtc related javascript. It is independent of Signaling Server technology.
+
+## src -> server:
+- This folder contains a NodeJS project. This is being used as signaling server and for meeting & participant management. 
+- It is maintaining this information in memory (currently) and no database is involved. 
+- **app.js** file (which contains server side functions) is available in this folder. 
+- We need to 
+-- Install NodeJS
+-- Go to this folder and run
+   > npm install
+  
+   > npm run
+
+-- It will start server app on port (3000) and URL to use in client app is http://localhost:3000
 
 ## src -> ssl-certificate
-This folder contains localhost certificate to be used with Visual Studio Code Live Server.
+- This folder contains localhost certificate to be used with Visual Studio Code Live Server.
+
 
 # Application Flow
 1. When we open index.html of client application, it expects a meeting id (?mid=) in URL. If it is not given, it generates one and shows on page.
@@ -77,6 +94,8 @@ A peer (browser tab) starts communication by creating connection and then creati
 - When you open a link (with meeting id) in new tab, it creates a connection with signaling server and registers your user with connection id (generated by socket io). So this connection id is unique identifier for application, not your user name.
 Note each refresh will create a new connection with server (means new registration). Old connections will be removed after few seconds and UI will reflect that too.
 - As it is using WebRTC APIs so when you will start audio/camera/screen sharing, it will ask for your permission.
+
+# License to use
 
 Copyright (c) 2020 LearningInUrdu https://github.com/bilalshahzad139/
 Bilal Shahzad | https://www.linkedin.com/in/bilalshahzad139/
